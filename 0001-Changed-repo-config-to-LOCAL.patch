@@ -1,0 +1,136 @@
+From 33a939597e2a43cefe7e6706a17e99f9f07bc422 Mon Sep 17 00:00:00 2001
+From: Israel Padilla <israel.padilla@intel.com>
+Date: Thu, 25 May 2017 21:02:29 +0000
+Subject: [PATCH] Changed repo config to LOCAL
+
+---
+ benchmarks/build.gradle       | 7 ++++---
+ buildSrc/build.gradle         | 6 +++---
+ client/benchmark/build.gradle | 8 +++++---
+ core/build.gradle             | 4 +++-
+ distribution/build.gradle     | 4 +---
+ gradle.properties             | 1 +
+ 6 files changed, 17 insertions(+), 13 deletions(-)
+
+diff --git a/benchmarks/build.gradle b/benchmarks/build.gradle
+index 084b49c..09e0314 100644
+--- a/benchmarks/build.gradle
++++ b/benchmarks/build.gradle
+@@ -19,9 +19,7 @@
+ 
+ buildscript {
+     repositories {
+-        maven {
+-            url 'https://plugins.gradle.org/m2/'
+-        }
++        mavenLocal()
+     }
+     dependencies {
+         classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
+@@ -40,6 +38,9 @@ mainClassName = 'org.openjdk.jmh.Main'
+ test.enabled = false
+ 
+ dependencies {
++    repositories {
++        mavenLocal()
++    }
+     compile("org.elasticsearch:elasticsearch:${version}") {
+         // JMH ships with the conflicting version 4.6 (JMH will not update this dependency as it is Java 6 compatible and joptsimple is one
+         // of the most recent compatible version). This prevents us from using jopt-simple in benchmarks (which should be ok) but allows us
+diff --git a/buildSrc/build.gradle b/buildSrc/build.gradle
+index 6536c77..072c6c7 100644
+--- a/buildSrc/build.gradle
++++ b/buildSrc/build.gradle
+@@ -77,7 +77,7 @@ processResources {
+  *****************************************************************************/
+ 
+ repositories {
+-  jcenter()
++  mavenLocal()
+ }
+ 
+ dependencies {
+@@ -100,7 +100,7 @@ dependencies {
+ // Use logging dependency instead
+ 
+ dependencies {
+-  compileOnly "org.gradle:gradle-logging:${GradleVersion.current().getVersion()}"
++  compileOnly "org.gradle:gradle-logging:3.5"
+   compile 'ru.vyarus:gradle-animalsniffer-plugin:1.2.0' // Gradle 2.14 requires a version > 1.0.1
+ }
+ 
+@@ -114,7 +114,7 @@ if (project == rootProject) {
+     if (System.getProperty("repos.mavenLocal") != null) {
+       mavenLocal()
+     }
+-    mavenCentral()
++    mavenLocal()
+   }
+   test.exclude 'org/elasticsearch/test/NamingConventionsCheckBadClasses*'
+ }
+diff --git a/client/benchmark/build.gradle b/client/benchmark/build.gradle
+index e17c7b8..e2141f5 100644
+--- a/client/benchmark/build.gradle
++++ b/client/benchmark/build.gradle
+@@ -19,9 +19,7 @@
+ 
+ buildscript {
+   repositories {
+-    maven {
+-      url 'https://plugins.gradle.org/m2/'
+-    }
++    mavenLocal()
+   }
+   dependencies {
+     classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
+@@ -46,6 +44,10 @@ check.dependsOn.remove(test)
+ // explicitly override the test task too in case somebody invokes 'gradle test' so it won't trip
+ task test(type: Test, overwrite: true)
+ 
++repositories {
++    mavenLocal()
++}
++
+ dependencies {
+   compile 'org.apache.commons:commons-math3:3.2'
+ 
+diff --git a/core/build.gradle b/core/build.gradle
+index 72aaca6..7257277 100644
+--- a/core/build.gradle
++++ b/core/build.gradle
+@@ -37,7 +37,9 @@ publishing {
+ archivesBaseName = 'elasticsearch'
+ 
+ dependencies {
+-
++    repositories{
++        mavenLocal()
++    }
+   // lucene
+   compile "org.apache.lucene:lucene-core:${versions.lucene}"
+   compile "org.apache.lucene:lucene-analyzers-common:${versions.lucene}"
+diff --git a/distribution/build.gradle b/distribution/build.gradle
+index d35dc1c..b171953 100644
+--- a/distribution/build.gradle
++++ b/distribution/build.gradle
+@@ -31,9 +31,7 @@ import org.elasticsearch.gradle.test.RunTask
+ // for deb/rpm
+ buildscript {
+   repositories {
+-    maven {
+-      url "https://plugins.gradle.org/m2/"
+-    }
++    mavenLocal()
+   }
+   dependencies {
+     classpath 'com.netflix.nebula:gradle-ospackage-plugin:3.4.0'
+diff --git a/gradle.properties b/gradle.properties
+index 6b1823d..3389189 100644
+--- a/gradle.properties
++++ b/gradle.properties
+@@ -1 +1,2 @@
+ org.gradle.daemon=false
++repos.mavenLocal=true
+-- 
+2.10.1
+
