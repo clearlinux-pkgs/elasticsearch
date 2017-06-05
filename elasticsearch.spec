@@ -1,6 +1,6 @@
 Name     : elasticsearch
 Version  : 5.4.0
-Release  : 1
+Release  : 2
 URL      : https://github.com/elastic/elasticsearch/
 Source0  : https://github.com/elastic/elasticsearch/archive/v5.4.0.tar.gz
 Source1  : init.gradle
@@ -25,7 +25,7 @@ You can add .gradle init scripts to this directory. Each one is executed at the 
 %build
 export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk/
 mkdir -p %{buildroot}/.m2
-cp -R /usr/share/gradle/.m2/* %{buildroot}/.m2
+cp -R /usr/share/elasticsearch/.m2/* %{buildroot}/.m2
 ln -s %{buildroot}/.m2 /builddir/.m2
 cp %{SOURCE1} /tmp/init.gradle
 gradle assemble   --init-script /tmp/init.gradle
