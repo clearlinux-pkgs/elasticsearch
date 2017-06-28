@@ -1,0 +1,90 @@
+From e50fe8cf76c00574bf6653ca7c2a3f1384256aab Mon Sep 17 00:00:00 2001
+From: Athenas Jimenez Gonzalez <athenas.jimenez.gonzalez@intel.com>
+Date: Wed, 28 Jun 2017 20:47:26 +0000
+Subject: [PATCH] Change repo config lo LOCAL
+
+---
+ benchmarks/build.gradle       | 4 +---
+ buildSrc/build.gradle         | 4 ++--
+ client/benchmark/build.gradle | 4 +---
+ distribution/build.gradle     | 4 +---
+ gradle.properties             | 1 +
+ 5 files changed, 6 insertions(+), 11 deletions(-)
+
+diff --git a/benchmarks/build.gradle b/benchmarks/build.gradle
+index 084b49c..f9fbde2 100644
+--- a/benchmarks/build.gradle
++++ b/benchmarks/build.gradle
+@@ -19,9 +19,7 @@
+ 
+ buildscript {
+     repositories {
+-        maven {
+-            url 'https://plugins.gradle.org/m2/'
+-        }
++        mavenLocal()
+     }
+     dependencies {
+         classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
+diff --git a/buildSrc/build.gradle b/buildSrc/build.gradle
+index 6536c77..f7688d5 100644
+--- a/buildSrc/build.gradle
++++ b/buildSrc/build.gradle
+@@ -77,7 +77,7 @@ processResources {
+  *****************************************************************************/
+ 
+ repositories {
+-  jcenter()
++  mavenLocal()
+ }
+ 
+ dependencies {
+@@ -114,7 +114,7 @@ if (project == rootProject) {
+     if (System.getProperty("repos.mavenLocal") != null) {
+       mavenLocal()
+     }
+-    mavenCentral()
++    mavenLocal()
+   }
+   test.exclude 'org/elasticsearch/test/NamingConventionsCheckBadClasses*'
+ }
+diff --git a/client/benchmark/build.gradle b/client/benchmark/build.gradle
+index e17c7b8..55fbf16 100644
+--- a/client/benchmark/build.gradle
++++ b/client/benchmark/build.gradle
+@@ -19,9 +19,7 @@
+ 
+ buildscript {
+   repositories {
+-    maven {
+-      url 'https://plugins.gradle.org/m2/'
+-    }
++    mavenLocal()
+   }
+   dependencies {
+     classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
+diff --git a/distribution/build.gradle b/distribution/build.gradle
+index d35dc1c..b171953 100644
+--- a/distribution/build.gradle
++++ b/distribution/build.gradle
+@@ -31,9 +31,7 @@ import org.elasticsearch.gradle.test.RunTask
+ // for deb/rpm
+ buildscript {
+   repositories {
+-    maven {
+-      url "https://plugins.gradle.org/m2/"
+-    }
++    mavenLocal()
+   }
+   dependencies {
+     classpath 'com.netflix.nebula:gradle-ospackage-plugin:3.4.0'
+diff --git a/gradle.properties b/gradle.properties
+index 6b1823d..3389189 100644
+--- a/gradle.properties
++++ b/gradle.properties
+@@ -1 +1,2 @@
+ org.gradle.daemon=false
++repos.mavenLocal=true
+-- 
+2.13.2
+

@@ -1,11 +1,11 @@
 Name     : elasticsearch
 Version  : 5.4.0
-Release  : 2
+Release  : 3
 URL      : https://github.com/elastic/elasticsearch/
 Source0  : https://github.com/elastic/elasticsearch/archive/v5.4.0.tar.gz
 Source1  : init.gradle
 Source2  : elasticsearch-script.sh
-Patch0   : 0001-Changed-repo-config-to-LOCAL.patch
+Patch0   : 0001-Change-repo-config-to-LOCAL.patch
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : Apache-2.0
@@ -22,22 +22,21 @@ You can add .gradle init scripts to this directory. Each one is executed at the 
 %setup -q -n elasticsearch-5.4.0
 %patch0 -p1
 
+mkdir -p /builddir/.m2
+cp -R /usr/share/elasticsearch/.m2/* /builddir/.m2
+
 %build
 export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk/
-mkdir -p %{buildroot}/.m2
-cp -R /usr/share/elasticsearch/.m2/* %{buildroot}/.m2
-ln -s %{buildroot}/.m2 /builddir/.m2
-cp %{SOURCE1} /tmp/init.gradle
-gradle assemble   --init-script /tmp/init.gradle
-mkdir -p /tmp/elasticsearch
-cp /builddir/build/BUILD/elasticsearch-5.4.0/distribution/tar/build/distributions/elasticsearch-5.4.0-SNAPSHOT.tar.gz /tmp/elasticsearch
+gradle --offline assemble --init-script %{SOURCE1}
 
 %install
+rm -rf  %{buildroot}
 mkdir -p %{buildroot}/usr/share/elasticsearch
-cd /tmp/elasticsearch
-tar -xvf elasticsearch-5.4.0-SNAPSHOT.tar.gz
-cp -R elasticsearch-5.4.0-SNAPSHOT/* %{buildroot}/usr/share/elasticsearch
-## Add helper script
+tar -xf distribution/tar/build/distributions/elasticsearch-5.4.0-SNAPSHOT.tar.gz \
+-C %{buildroot}/usr/share/elasticsearch \
+--strip 1
+
+# Add helper scripts to /usr/bin
 mkdir -p %{buildroot}/usr/bin
 cp %{SOURCE2} %{buildroot}/usr/bin/elasticsearch
 chmod 755 %{buildroot}/usr/bin/elasticsearch
