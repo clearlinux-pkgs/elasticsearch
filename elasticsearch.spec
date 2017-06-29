@@ -1,6 +1,6 @@
 Name     : elasticsearch
 Version  : 5.4.0
-Release  : 3
+Release  : 4
 URL      : https://github.com/elastic/elasticsearch/
 Source0  : https://github.com/elastic/elasticsearch/archive/v5.4.0.tar.gz
 Source1  : init.gradle
@@ -146,3 +146,4 @@ rm %{buildroot}/usr/share/elasticsearch/bin/*.exe
 /usr/share/elasticsearch/modules/transport-netty4/plugin-descriptor.properties
 /usr/share/elasticsearch/modules/transport-netty4/plugin-security.policy
 /usr/share/elasticsearch/modules/transport-netty4/transport-netty4-5.4.0-SNAPSHOT.jar
+/usr/share/elasticsearch/plugins
