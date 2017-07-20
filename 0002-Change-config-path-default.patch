@@ -1,0 +1,25 @@
+From 26e9b1e539cffe6958fec8f61969105761f017d6 Mon Sep 17 00:00:00 2001
+From: Israel Padilla <israel.padilla@intel.com>
+Date: Fri, 14 Jul 2017 19:21:12 +0000
+Subject: [PATCH] Change config path default.
+
+---
+ distribution/build.gradle | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/distribution/build.gradle b/distribution/build.gradle
+index d35dc1cff3..456a26ad8b 100644
+--- a/distribution/build.gradle
++++ b/distribution/build.gradle
+@@ -511,7 +511,7 @@ Map<String, String> expansionsForDistribution(distributionType) {
+       'tar': '$ES_HOME/config',
+       'zip': '$ES_HOME/config',
+       'integ-test-zip': '$ES_HOME/config',
+-      'def': '/etc/elasticsearch',
++      'def': '/usr/share/defaults/elasticsearch',
+     ],
+     'path.env': [
+       'deb': '/etc/default/elasticsearch',
+-- 
+2.13.3
+

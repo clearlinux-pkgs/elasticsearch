@@ -1,0 +1,26 @@
+From 45c51a0680d16cb1534368131be3c89bcb666afe Mon Sep 17 00:00:00 2001
+From: Israel Padilla <israel.padilla@intel.com>
+Date: Thu, 20 Jul 2017 22:15:00 +0000
+Subject: [PATCH] Make elasticsearch.service use the elasticsearch script
+ instead of the binary
+
+---
+ distribution/src/main/packaging/systemd/elasticsearch.service | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/distribution/src/main/packaging/systemd/elasticsearch.service b/distribution/src/main/packaging/systemd/elasticsearch.service
+index 0554371a1f..48ecedcbe0 100644
+--- a/distribution/src/main/packaging/systemd/elasticsearch.service
++++ b/distribution/src/main/packaging/systemd/elasticsearch.service
+@@ -19,7 +19,7 @@ Group=elasticsearch
+ 
+ ExecStartPre=/usr/share/elasticsearch/bin/elasticsearch-systemd-pre-exec
+ 
+-ExecStart=/usr/share/elasticsearch/bin/elasticsearch \
++ExecStart=/usr/share/elasticsearch/bin/elasticsearch-script \
+                                                 -p ${PID_DIR}/elasticsearch.pid \
+                                                 --quiet \
+                                                 -Edefault.path.logs=${LOG_DIR} \
+-- 
+2.13.3
+

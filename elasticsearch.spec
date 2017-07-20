@@ -5,7 +5,10 @@ URL      : https://github.com/elastic/elasticsearch/
 Source0  : https://github.com/elastic/elasticsearch/archive/v5.4.0.tar.gz
 Source1  : init.gradle
 Source2  : elasticsearch-script.sh
+Source3  : elasticsearch.tmpfiles
 Patch0   : 0001-Change-repo-config-to-LOCAL.patch
+Patch1   : 0002-Change-config-path-default.patch
+Patch2   : 0003-Make-elasticsearch.service-use-the-elasticsearch-scr.patch
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : Apache-2.0
@@ -14,6 +17,7 @@ BuildRequires: elasticsearch-dep
 BuildRequires: openjdk-dev
 BuildRequires: ca-certs
 BuildRequires: procps-ng
+BuildRequires: rpm-common
 
 %description
 You can add .gradle init scripts to this directory. Each one is executed at the start of the build.
@@ -21,6 +25,8 @@ You can add .gradle init scripts to this directory. Each one is executed at the 
 %prep
 %setup -q -n elasticsearch-5.4.0
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 mkdir -p /builddir/.m2
 cp -R /usr/share/elasticsearch/.m2/* /builddir/.m2
@@ -30,36 +36,40 @@ export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk/
 gradle --offline assemble --init-script %{SOURCE1}
 
 %install
-rm -rf  %{buildroot}
-mkdir -p %{buildroot}/usr/share/elasticsearch
-tar -xf distribution/tar/build/distributions/elasticsearch-5.4.0-SNAPSHOT.tar.gz \
--C %{buildroot}/usr/share/elasticsearch \
---strip 1
-
-# Add helper scripts to /usr/bin
-mkdir -p %{buildroot}/usr/bin
-cp %{SOURCE2} %{buildroot}/usr/bin/elasticsearch
-chmod 755 %{buildroot}/usr/bin/elasticsearch
-
-# Remove unnecessary bat/exe files
-rm %{buildroot}/usr/share/elasticsearch/bin/*.bat
-rm %{buildroot}/usr/share/elasticsearch/bin/*.exe
+cp distribution/rpm/build/distributions/elasticsearch-5.4.0-SNAPSHOT.rpm %{buildroot}
+pushd %{buildroot}
+mkdir -p %{buildroot}/usr/share/defaults/elasticsearch
+mkdir -p %{buildroot}/usr/share/elasticsearch/plugins
+rpm2cpio elasticsearch-5.4.0-SNAPSHOT.rpm | cpio -imdv
+cat %{SOURCE3} >> %{buildroot}/usr/lib/tmpfiles.d/elasticsearch.conf
+#Copy config files to default directory
+cp -R %{buildroot}/etc/elasticsearch/* %{buildroot}/usr/share/defaults/elasticsearch
+chmod 755 -R %{buildroot}/usr/share/defaults/elasticsearch
+#Replace elasticsearch binary with a script that will provide the stateless funcitonality
+cp %{SOURCE2} %{buildroot}/usr/share/elasticsearch/bin/elasticsearch-script
+chmod 755 %{buildroot}/usr/share/elasticsearch/bin/elasticsearch-script
+rm elasticsearch-5.4.0-SNAPSHOT.rpm
+popd
 
 %files
 %defattr(-,root,root,-)
-/usr/bin/elasticsearch
+/usr/lib/sysctl.d/elasticsearch.conf
+/usr/lib/systemd/system/elasticsearch.service
+/usr/lib/tmpfiles.d/elasticsearch.conf
+/usr/share/defaults/elasticsearch/elasticsearch.yml
+/usr/share/defaults/elasticsearch/jvm.options
+/usr/share/defaults/elasticsearch/log4j2.properties
+/usr/share/defaults/elasticsearch/scripts/
 /usr/share/elasticsearch/LICENSE.txt
 /usr/share/elasticsearch/NOTICE.txt
 /usr/share/elasticsearch/README.textile
 /usr/share/elasticsearch/bin/elasticsearch
 /usr/share/elasticsearch/bin/elasticsearch-keystore
 /usr/share/elasticsearch/bin/elasticsearch-plugin
+/usr/share/elasticsearch/bin/elasticsearch-script
 /usr/share/elasticsearch/bin/elasticsearch-systemd-pre-exec
 /usr/share/elasticsearch/bin/elasticsearch-translog
 /usr/share/elasticsearch/bin/elasticsearch.in.sh
-/usr/share/elasticsearch/config/elasticsearch.yml
-/usr/share/elasticsearch/config/jvm.options
-/usr/share/elasticsearch/config/log4j2.properties
 /usr/share/elasticsearch/lib/HdrHistogram-2.1.9.jar
 /usr/share/elasticsearch/lib/elasticsearch-5.4.0-SNAPSHOT.jar
 /usr/share/elasticsearch/lib/hppc-0.7.1.jar
