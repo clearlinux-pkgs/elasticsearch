@@ -1,6 +1,6 @@
 Name     : elasticsearch
 Version  : 5.4.0
-Release  : 5
+Release  : 6
 URL      : https://github.com/elastic/elasticsearch/
 Source0  : https://github.com/elastic/elasticsearch/archive/v5.4.0.tar.gz
 Source1  : init.gradle
