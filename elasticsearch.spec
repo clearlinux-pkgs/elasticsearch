@@ -1,6 +1,6 @@
 Name     : elasticsearch
 Version  : 5.4.0
-Release  : 7
+Release  : 8
 URL      : https://github.com/elastic/elasticsearch/
 Source0  : https://github.com/elastic/elasticsearch/archive/v5.4.0.tar.gz
 Source1  : init.gradle
@@ -41,7 +41,8 @@ pushd %{buildroot}
 mkdir -p %{buildroot}/usr/share/defaults/elasticsearch
 mkdir -p %{buildroot}/usr/share/elasticsearch/plugins
 rpm2cpio elasticsearch-5.4.0-SNAPSHOT.rpm | cpio -imdv
-cat %{SOURCE3} >> %{buildroot}/usr/lib/tmpfiles.d/elasticsearch.conf
+# overwrite stock tmpfiles.d config
+cp %{SOURCE3} %{buildroot}/usr/lib/tmpfiles.d/elasticsearch.conf
 #Copy config files to default directory
 cp -R %{buildroot}/etc/elasticsearch/* %{buildroot}/usr/share/defaults/elasticsearch
 chmod 755 -R %{buildroot}/usr/share/defaults/elasticsearch
